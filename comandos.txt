@@ -1,0 +1,5 @@
+php artisan make:migration create_productos_table  crea un fichero de una migracion
+php artisan make:model producto crea un modelo 
+php artisan make:controller producto crea un controlador 
+php artisan make:model Alumnos -mcr crea un modelo,migracion y controlador al mismo tiempo
+php artisan install:api
