@@ -11,15 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('publicaciones', function(Blueprint $table){
+        Schema::create('vacantes' , function(Blueprint $table){
             $table->id();
-            $table->string('titulo' , length:100);
-            $table->text('descripcion');
-            $table->string('requisitos' , length:100);
-            $table->integer('telefono');
-            $table->string('email' , length:100)->unique();
-            $table->date('fecha_publicacion');
-            $table->date('fecha_expiracion');
+            $table->text("requisitos");
+            $table->date("fecha_de_publicacion");
+            $table->date("fecha_de_expiracion");
+            $table->text("descripcion");
+            $table->string("titulo" , length : 100);
             $table->foreignId('empresa_id')->constrained('empresas');
             $table->timestamps();
             $table->softDeletes();
@@ -31,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('publicaciones');
+        Schema::dropIfExsist();
     }
 };

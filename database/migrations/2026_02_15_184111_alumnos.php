@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('postulaciones' , function(Blueprint $table){
+        Schema::create('alumnos' , function(Blueprint $table){
             $table->id();
-            $table->foreignId('alumno_id')->constrained('alumnos');
-            $table->foreignId('publicacion_id')->constrained('publicaciones');
-            $table->string('estatus')->default('pendiente');
+            $table->integer("matricula");
+            $table->string("curriculum" , length : 100);
+            $table->foreignId('carrera_id')->constrained('carreras');
+            $table->foreignId('usuario_id')->constrained('usuarios');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -26,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('postulaciones');
+        Schema::deleteIfExists('alumnos');
     }
 };

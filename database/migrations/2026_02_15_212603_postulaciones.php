@@ -11,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('recomendaciones' , function(Blueprint $table){
+        Schema::create('postulaciones' , function(Blueprint $table){
             $table->id();
             $table->foreignId('alumno_id')->constrained('alumnos');
-            $table->foreignId('instructor_id')->constrained('instructores');
-            $table->boolean('recomendado')->default(true);
-            $table->text('comentario');
+            $table->foreignId('vacante_id')->constrained('vacantes');
+            $table->string('comentario' , length: 100);
             $table->timestamps();
             $table->softDeletes();
         });
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('recomendaciones');
+        Schema::dropIfExist();
     }
 };

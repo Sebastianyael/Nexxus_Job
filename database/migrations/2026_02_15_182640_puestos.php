@@ -11,8 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('instructores', function (Blueprint $table) {
-            $table->dropColumn('estado');
+        Schema::create('puestos' , function(Blueprint $table){
+            $table->id();
+            $table->string('nombre' , length : 100);
+            $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -21,8 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('instructores', function (Blueprint $table) {
-            $table->string('estado');
-        });
+        Schema::deleteIfExists('puestos');
     }
 };
