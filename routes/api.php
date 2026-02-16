@@ -8,10 +8,10 @@ use App\Http\Controllers\Api\EmpresaController;
 
 
 Route::controller(AlumnoController::class)->group(function () {
-    Route::get('alumnos' , 'index' );
-    Route::post('alumnos' , 'store');
-    Route::put('alumnos/{id}' , 'update');
-    Route::delete('alumnos/{id}' , 'destroy');
+    Route::get('usuarios/alumnos' , 'index' );
+    Route::post('usuarios/alumnos' , 'store');
+    Route::put('usuarios/alumnos/{id}' , 'update');
+    Route::delete('usuarios/alumnos/{id}' , 'destroy');
 });
 
 Route::controller(InstructorController::class)->group(function (){

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('apellido_p' , length:100);
             $table->string('apellido_m' , length:100);
             $table->string('email')->unique();
-            $table->integer('telefono');
+            $table->string('telefono' , length : 10);
             $table->string('contraseña', length:100);
             $table->date('fecha_nacimiento');
             $table->string('genero');

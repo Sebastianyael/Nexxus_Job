@@ -1,44 +1,47 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+    namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\Alumnos;
-use Illuminate\Support\Facades\Validator;
+    use App\Http\Controllers\Controller;
+    use Illuminate\Http\Request;
+    use App\Models\Alumno;
+    use App\Models\Usuario;
+    use Illuminate\Support\Facades\Validator;
+    use Illuminate\Support\Facades\DB;
 
 class AlumnoController extends Controller
 {
     public function index(){
-        $alumnos = Alumnos::all();
+        $alumnos = Alumno::with('usuario')->first();
 
-        if($alumnos -> isEmpty()){
+        if(!$alumnos){
             $datos = [
                 'mensaje' => 'No hay estudiantes registrados',
                 'status' => 404
             ];
 
-            return response()->json($datos);
+            return response()->json($datos , 404);
         }
 
-        return response()->json($alumnos);
+        return response()->json($alumnos , 200);
         
     }
 
     public function store(Request $request){
 
         $validacion = Validator::make($request -> all() , [
-            'matricula' => 'required',
-            'nombre' => 'required',
-            'apellido_p' => 'required',
-            'apellido_m' => 'required',
-            'fecha_nacimiento' => 'required',
-            'telefono' => 'required',
-            'carrera' => 'required',
-            'email' => 'required',
-            'contraseña' => 'required',
-            'curriculumn' => 'required',
-            'genero' => 'required'
+            "nombre" => "required",
+            "apellido_p" => "required",
+            "apellido_m" => "required",
+            "email" => "required",
+            "telefono" => "required",
+            "contraseña" => "required",
+            "fecha_nacimiento" => "required",
+            "genero" => "required",
+            "tipo" => "required",
+            "matricula" => "required",
+            "curriculum" => "required",
+            "carrera_id" => "required",
         ]);
 
         if($validacion->fails()){
@@ -50,18 +53,25 @@ class AlumnoController extends Controller
             return response()->json($data,400);
 
         }else{
-            $alumno = Alumnos::create([
-                'matricula' => $request->matricula,
-                'nombre' => $request->nombre,
-                'apellido_p' => $request->apellido_p,
-                'apellido_m' => $request->apellido_m,
-                'fecha_nacimiento' => $request->fecha_nacimiento,
-                'telefono' => $request->telefono,
-                'carrera' => $request->carrera,
-                'email' => $request->email,
-                'contraseña' => $request->contraseña,
-                'curriculumn' => $request->curriculumn,
-                'genero' => $request->genero
+            $usuario = Usuario::create([
+                "nombre" => $request->nombre,
+                "apellido_p" => $request->apellido_p,
+                "apellido_m" => $request->apellido_m,
+                "email" => $request->email,
+                "telefono" => $request->telefono,
+                "contraseña" => $request->contraseña,
+                "fecha_nacimiento" => $request->fecha_nacimiento,
+                "genero" => $request->genero,
+                "tipo" => $request->tipo
+            ]);
+
+
+
+            $alumno = Alumno::create([
+                "matricula" => $request->matricula,
+                "curriculum" => $request->curriculum,
+                "carrera_id" => $request->carrera_id,
+                "usuario_id" => $usuario->id
             ]);
             
             return response()->json(['mensaje' => 'El alumno fue creado correctamente' , 'status' => 200], 200);
@@ -69,10 +79,10 @@ class AlumnoController extends Controller
     }
 
     public function update(Request $request,$id){
-        $alumno = Alumnos::find($id);
-        if(!$alumno){
+        $usuario = Usuario::find($id);
+        if(!$usuario){
             $data = [
-                "mensaje" => "Estudiante no encontrado",
+                "mensaje" => "Usuario no encontrado",
                 "estatus" => 404
             ];
 
@@ -80,17 +90,18 @@ class AlumnoController extends Controller
         }
 
         $validacion = Validator::make($request -> all() , [
-            'matricula' => 'required',
-            'nombre' => 'required',
-            'apellido_p' => 'required',
-            'apellido_m' => 'required',
-            'fecha_nacimiento' => 'required',
-            'telefono' => 'required',
-            'carrera' => 'required',
-            'email' => 'required',
-            'contraseña' => 'required',
-            'curriculumn' => 'required',
-            'genero' => 'required'
+            "nombre" => "required",
+            "apellido_p" => "required",
+            "apellido_m" => "required",
+            "email" => "required",
+            "telefono" => "required",
+            "contraseña" => "required",
+            "fecha_nacimiento" => "required",
+            "genero" => "required",
+            "tipo" => "required",
+            "matricula" => "required",
+            "curriculum" => "required",
+            "carrera_id" => "required",
         ]);
         
         if($validacion->fails()){
@@ -101,40 +112,45 @@ class AlumnoController extends Controller
             ];
             return response()->json($data,400);
         }else{
-            $alumno->matricula = $request->matricula;
-            $alumno->nombre = $request->nombre;
-            $alumno->apellido_p = $request->apellido_p;
-            $alumno->apellido_m = $request->apellido_m;
-            $alumno->fecha_nacimiento = $request->fecha_nacimiento;
-            $alumno->telefono = $request->telefono;
-            $alumno->carrera = $request->carrera;
-            $alumno->email = $request->email;
-            $alumno->contraseña = $request->contraseña;
-            $alumno->curriculumn = $request->curriculumn;
-            $alumno->genero = $request->genero;
-            
-            $alumno->save();
+            $usuario->nombre = $request->nombre;
+            $usuario->apellido_p = $request->apellido_p;
+            $usuario->apellido_m = $request->apellido_m;
+            $usuario->email = $request->email;
+            $usuario->telefono = $request->telefono;
+            $usuario->contraseña = $request->contraseña;
+            $usuario->fecha_nacimiento = $request->fecha_nacimiento;
+            $usuario->genero = $request->genero;
+            $usuario->save();
+
+            DB::table('alumnos')
+            ->where('usuario_id', $id)
+            ->update([
+                'matricula'  => $request->matricula,
+                'curriculum' => $request->curriculum,
+                'carrera_id' => $request->carrera_id,
+            ]);
+
             $data = [
                 "mensaje" => "Estudiante actualizado correctamente",
                 "estatus" => 200,
-                "Estudiante_actualizado" => $alumno
             ];
             return response()->json($data,200);
         }
     }
 
     public function destroy(Request $request , $id){
-        $alumno = Alumnos::find($id);
+        $alumno = Alumno::where('usuario_id' , $id)->first();
+        $alumno->delete();
+        $usuario = Usuario::find($id);
 
-        if(!$alumno){
+        if(!$usuario){
             $data = [
                 "Mensaje" => "Alumno no encontrado",
                 "Estatus" => 404
             ];
             return response()->json($data,404);
         }
-
-        $alumno->delete();
+        $usuario->delete();
 
         $data = [ 
             "mensaje" => "Alumno eliminado correctamente",

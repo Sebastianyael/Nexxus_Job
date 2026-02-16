@@ -6,22 +6,25 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class alumnos extends Model
+class Alumno extends Model
 {
     use HasFactory;
     use SoftDeletes;
     protected $table = 'alumnos';
     protected $fillable = [
         "matricula",
-        "nombre",
-        "apellido_p",
-        "apellido_m",
-        "fecha_nacimiento",
-        "telefono",
-        "carrera",
-        "email",
-        "contraseña",
-        "curriculumn",
-        "genero"
+        "curriculum",
+        "carrera_id",
+        "usuario_id"
     ];
+
+    
+
+    public function usuario(){
+        return $this->belongsTo(Usuario::class, 'usuario_id');
+    }
+
+    public function carrera(){
+        return $this->belongsTo(Carrera::class, 'carrera_id');
+    }
 }
