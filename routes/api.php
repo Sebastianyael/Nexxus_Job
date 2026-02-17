@@ -15,10 +15,10 @@ Route::controller(AlumnoController::class)->group(function () {
 });
 
 Route::controller(InstructorController::class)->group(function (){
-    Route::get('instructores' , 'index');
-    Route::post('instructores' , 'store');
-    Route::put('instructores/{id}' , 'update');
-    Route::delete('instructores/{id}' , 'destroy');
+    Route::get('usuarios/instructores' , 'index');
+    Route::post('usuarios/instructores' , 'store');
+    Route::put('usuarios/instructores/{id}' , 'update');
+    Route::delete('usuarios/instructores/{id}' , 'destroy');
 });
 
 Route::controller(EmpresaController::class)->group(function () {

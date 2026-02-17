@@ -3,14 +3,16 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Instructor;
+use App\Models\Usuario;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class InstructorController extends Controller
 {
     public function index(){
-        $instructores = Instructor::all();
+        $instructores = Instructor::with('usuarios')->first();
 
-        if($instructores -> isEmpty()){
+        if(!$instructores){
             $data = [
                 "mensaje" => "No hay instructores registrados",
                 "estatus" => 404
@@ -33,12 +35,14 @@ class InstructorController extends Controller
             "nombre" => "required",
             "apellido_p" => "required",
             "apellido_m" => "required",
-            "no_empleado" => "required",
-            "telefono" => "required",
             "email" => "required",
+            "telefono" => "required",
             "contraseña" => "required",
-            "cargo" => "required",
-            "fecha_nacimiento" => "required"
+            "fecha_nacimiento" => "required",
+            "genero" => "required",
+            "tipo" => "required",
+            "no_empleado" => "required",
+            "id_puesto" => "required",
         ]);
 
         if($validacion->fails()){
@@ -48,20 +52,35 @@ class InstructorController extends Controller
                 "estatus" => 400
             ];
 
-            return respose() -> json($data,400);
+            return response() -> json($data,400);
         }
 
-        $instructor = Instructor::create([
+        $usuario = Usuario::create([
             "nombre" => $request->nombre,
             "apellido_p" => $request->apellido_p,
             "apellido_m" => $request->apellido_m,
-            "no_empleado" => $request->no_empleado,
-            "telefono" => $request->telefono,
             "email" => $request->email,
+            "telefono" => $request->telefono,
             "contraseña" => $request->contraseña,
-            "cargo" => $request->cargo,
-            "fecha_nacimiento" => $request->fecha_nacimiento
+            "fecha_nacimiento" => $request->fecha_nacimiento,
+            "genero" => $request->genero,
+            "tipo" => $request->tipo
         ]);
+
+        if(!$usuario){
+            $data = [
+                "mensaje" => "error en el registro de usuario",
+                "estatus" =>400
+            ];
+
+            return response()->json($data , 400);
+        }else{
+            $instructor = Instructor::create([
+                "no_empleado" => $request->no_empleado,
+                "id_puesto" => $request->id_puesto,
+                "id_usuario" => $usuario->id
+            ]); 
+        }
 
         $data = [
             "mensaje" => "Instructor registrado correctamente",
@@ -71,18 +90,31 @@ class InstructorController extends Controller
     }
 
     public function update(Request $request, $id){
-        $instructor = Instructor::find($id);
+        $usuario = Usuario::find($id);
+        
+        if(!$usuario){
+            $data = [
+                "mensjae" => "Usuario no encontrado",
+                "estatus" => 404
+             ];
+
+             return response()->json($data , 404);
+        }
+
+
 
         $validacion = Validator::make($request->all() , [
             "nombre" => "required",
             "apellido_p" => "required",
             "apellido_m" => "required",
-            "no_empleado" => "required",
-            "telefono" => "required",
             "email" => "required",
+            "telefono" => "required",
             "contraseña" => "required",
-            "cargo" => "required",
-            "fecha_nacimiento" => "required"
+            "fecha_nacimiento" => "required",
+            "genero" => "required",
+            "tipo" => "required",
+            "no_empleado" => "required",
+            "id_puesto" => "required",
         ]);
 
         if($validacion->fails()){
@@ -94,22 +126,31 @@ class InstructorController extends Controller
             return response()->json($data , 400);
         }
 
-        $instructor->nombre = $request->nombre;
-        $instructor->apellido_p = $request->apellido_p;
-        $instructor->apellido_m = $request->apellido_m;
-        $instructor->no_empleado = $request->no_empleado;
-        $instructor->telefono = $request->telefono;
-        $instructor->email = $request->email;
-        $instructor->contraseña = $request->contraseña;
-        $instructor->cargo = $request->cargo;
-        $instructor->fecha_nacimiento = $request->fecha_nacimiento;
+   
 
-        $instructor->save();
+        $usuario->nombre = $request->nombre;
+        $usuario->apellido_p = $request->apellido_p;
+        $usuario->apellido_m = $request->apellido_m;
+        $usuario->email = $request->email;
+        $usuario->telefono = $request->telefono;
+        $usuario->contraseña = $request->contraseña;
+        $usuario->fecha_nacimiento = $request->fecha_nacimiento;
+        $usuario->genero = $request->genero;
+
+        $usuario->save();
+
+        DB::table('instructores')
+            ->where('id_usuario' , $id)
+            ->update([
+                "no_empleado" => $request->no_empleado,
+                "id_puesto" => $request->id_puesto
+            ]);
+
 
         $data = [
             "mensaje" => "Instructor actualizado correctamente",
             "estatus" => 200,
-            "instructor" => $instructor
+            "instructor" => $usuario
 
         ];
 
@@ -117,19 +158,21 @@ class InstructorController extends Controller
     }
 
     public function destroy(Request $request , $id){
-        $instructor = Instructor::find($id);
+        $instructor = Instructor::where('id_usuario' , $id)->first();
+        $usuario = Usuario::find($id);
         
-        if(!$instructor){
+        if(!$usuario){
             $data = [
-                "mensaje" => "Instructor no encontrado",
+                "mensaje" => "Usario no encontrado",
                 "estatus" => 404
 
             ];
 
             return response()->json($data,404);
+        }else{
+            $instructor->delete();
+            $usuario->delete();
         }
-
-        $instructor->delete();
 
         $data = [
             "mensaje" => "Instructor eliminado correctamente",
