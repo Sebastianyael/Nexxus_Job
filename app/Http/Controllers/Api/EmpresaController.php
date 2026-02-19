@@ -36,11 +36,9 @@ class EmpresaController extends Controller
             "giro" => "required",
             "telefono" => "required",
             "email" => "required",
+            "contraseña" => "required",
             "calle" => "required",
-            "colonia" => "required",
-            "municipio" => "required",
-            "codigo_postal" => "required",
-            "estado" => "required"
+            "ubicacion_id" => "required",
         ]);
 
         if($validacion->fails()){
@@ -50,19 +48,17 @@ class EmpresaController extends Controller
                 "estatus" => 400
             ];
 
-            return reponse()->json($data , 400);
+            return response()->json($data , 400);
         }
 
        $empresa = Empresa::create([
-            "nombre" => $request->nombre,
+           "nombre" => $request->nombre,
             "giro" => $request->giro,
             "telefono" => $request->telefono,
             "email" => $request->email,
+            "contraseña" => $request->contraseña,
             "calle" => $request->calle,
-            "colonia" => $request->colonia,
-            "municipio" => $request->municipio,
-            "codigo_postal" => $request->codigo_postal,
-            "estado" => $request->estado
+            "ubicacion_id" => $request->ubicacion_id,
         ]); 
 
         $data = [
@@ -82,33 +78,28 @@ class EmpresaController extends Controller
             "giro" => "required",
             "telefono" => "required",
             "email" => "required",
+            "contraseña" => "required",
             "calle" => "required",
-            "colonia" => "required",
-            "municipio" => "required",
-            "codigo_postal" => "required",
-            "estado" => "required"
+            "ubicacion_id" => "required",
         ]);
 
         if($validacion->fails()){
             $data = [
                 "mensaje" => "La validacion fallo",
-                'error' => $validacion->errors(),  
+                'error' => $validacion->errors(),
                 "estatus" => 400
             ];
 
-            return respose() -> json($data,400);
+            return response()->json($data , 400);
         }
-
-
+       
         $empresa->nombre = $request->nombre;
         $empresa->giro = $request->giro;
         $empresa->telefono = $request->telefono;
         $empresa->email = $request->email;
+        $empresa->contraseña = $request->contraseña;
         $empresa->calle = $request->calle;
-        $empresa->colonia = $request->colonia;
-        $empresa->municipio = $request->municipio;
-        $empresa->codigo_postal = $request->codigo_postal;
-        $empresa->estado = $request->estado;
+        $empresa->ubicacion_id = $request->ubicacion_id;
 
         $empresa->save();
 
@@ -122,6 +113,7 @@ class EmpresaController extends Controller
         return response()->json($data , 200);
 
     }
+
 
     public function destroy(Request $request , $id){
         $empresa = Empresa::find($id);

@@ -16,10 +16,8 @@ class Empresa extends Model
         "giro",
         "telefono",
         "email",
+        "contraseña",
         "calle",
-        "colonia",
-        "municipio",
-        "codigo_postal",
-        "estado"
+        "ubicacion_id",
     ]; 
 }
