@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\AlumnoController;
 use App\Http\Controllers\Api\InstructorController;
 use App\Http\Controllers\Api\EmpresaController;
 use App\Http\Controllers\Api\RecomendacionesController;
+use App\Http\Controllers\Api\VacantesController;
 
 Route::controller(AlumnoController::class)->group(function () {
     Route::get('usuarios/alumnos' , 'index' );
@@ -33,4 +34,11 @@ Route::controller(RecomendacionesController::class)->group(function(){
     Route::post('recomendaciones' , 'store');
     Route::put('recomendaciones/{id}' , 'update');
     Route::delete('recomendaciones/{id}' , 'destroy');
+});
+
+Route::controller(VacantesController::class)->group(function(){
+    Route::get('vacantes' , 'index');
+    Route::post('vacantes' , 'store');
+    Route::put('vacantes/{id}' , 'update');
+    Route::delete('vacantes/{id}' , 'destroy');   
 });
