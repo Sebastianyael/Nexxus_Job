@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('alumno_id')->constrained('alumnos');
             $table->foreignId('vacante_id')->constrained('vacantes');
-            $table->string('comentario' , length: 100);
+            $table->string('estatus' , length: 100);
             $table->timestamps();
             $table->softDeletes();
         });
