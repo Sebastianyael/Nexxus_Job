@@ -12,18 +12,24 @@
 class AlumnoController extends Controller
 {
     public function index(){
-        $alumnos = Alumno::with('usuario')->first();
+        $alumnos = Alumno::with('usuario')->get();
 
-        if(!$alumnos){
-            $datos = [
+        if($alumnos -> isEmpty()){
+            $data = [
                 'mensaje' => 'No hay estudiantes registrados',
-                'status' => 404
+                'status' => 404,
             ];
 
-            return response()->json($datos , 404);
+            return response()->json($data , 404);
         }
 
-        return response()->json($alumnos , 200);
+        $data = [
+            'mensaje' => 'Lista de alumnos',
+            'status' => 404,
+            'alumnos' => $alumnos
+        ];
+
+        return response()->json($data, 200);
         
     }
 
@@ -74,7 +80,16 @@ class AlumnoController extends Controller
                 "usuario_id" => $usuario->id
             ]);
             
-            return response()->json(['mensaje' => 'El alumno fue creado correctamente' , 'status' => 200], 200);
+            $alumno->info = $usuario; 
+
+            $data = [
+                "mensaje" => "Alumno registrado correctamente",
+                "estatus" => 200,
+                "alumno" => $alumno,
+                
+            ];
+            
+            return response()->json($data, 200);
         }
     }
 
@@ -122,17 +137,18 @@ class AlumnoController extends Controller
             $usuario->genero = $request->genero;
             $usuario->save();
 
-            DB::table('alumnos')
-            ->where('usuario_id', $id)
-            ->update([
-                'matricula'  => $request->matricula,
-                'curriculum' => $request->curriculum,
-                'carrera_id' => $request->carrera_id,
-            ]);
+            $alumno = Alumno::where('usuario_id' , $usuario->id)->first();
+
+            $alumno->matricula = $request->matricula;
+            $alumno->curriculum = $request->curriculum;
+            $alumno->carrera_id = $request->carrera_id;
+
+            $alumno->info = $usuario;
 
             $data = [
-                "mensaje" => "Estudiante actualizado correctamente",
+                "mensaje" => "Alumno actualizado correctamente",
                 "estatus" => 200,
+                "alumno" => $alumno
             ];
             return response()->json($data,200);
         }

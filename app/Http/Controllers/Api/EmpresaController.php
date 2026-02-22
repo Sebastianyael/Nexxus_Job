@@ -10,7 +10,7 @@ use App\Models\Empresa;
 class EmpresaController extends Controller
 {
     public function index(){
-        $empresas = Empresa::all();
+        $empresas = Empresa::with('ubicacion')->get();
 
         if($empresas -> isEmpty()){
             $data = [
@@ -61,17 +61,19 @@ class EmpresaController extends Controller
             "ubicacion_id" => $request->ubicacion_id,
         ]); 
 
+        $info_empresa = Empresa::with('ubicacion')->get();
+
         $data = [
             "mensaje" => "Empresa registrada correctamente",
             "estatus" => 200,
-            "empresa" => $empresa
+            "empresa" => $info_empresa
         ];
 
-        return response()->json($empresa,200);
+        return response()->json($data,200);
     }
 
     public function update(Request $request , $id){
-        $empresa = Empresa::find($id);
+        $empresa = Empresa::with('ubicacion')->where('id' , $id)->first();
 
         $validacion = Validator::make($request->all() , [
             "nombre" => "required",

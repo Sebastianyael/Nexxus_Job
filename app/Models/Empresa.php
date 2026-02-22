@@ -20,4 +20,8 @@ class Empresa extends Model
         "calle",
         "ubicacion_id",
     ]; 
+
+    function ubicacion(){
+        return $this->belongsTo(Ubicacion::class , 'ubicacion_id');
+    }
 }

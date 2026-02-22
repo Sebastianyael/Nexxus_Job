@@ -11,6 +11,7 @@ class Usuario extends Model
     use SoftDeletes;
     protected $table = 'usuarios';
     protected $fillable = [
+        "id",
         "nombre",
         "apellido_p",
         "apellido_m",
