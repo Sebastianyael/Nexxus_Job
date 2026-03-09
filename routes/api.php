@@ -9,6 +9,12 @@ use App\Http\Controllers\Api\RecomendacionesController;
 use App\Http\Controllers\Api\VacantesController;
 use App\Http\Controllers\Api\PostulacionesController;
 
+use App\Http\Controllers\Api\LoginController;
+
+Route::controller(LoginController::class)->group(function () {
+    Route::post('login' , 'show');
+});
+
 Route::controller(AlumnoController::class)->group(function () {
     Route::get('usuarios/alumnos' , 'index' );
     Route::post('usuarios/alumnos' , 'store');
