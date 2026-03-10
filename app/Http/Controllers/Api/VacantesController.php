@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 class VacantesController extends Controller
 {
     public function index(){
-        $vacantes = Vacantes::all();
+        $vacantes = Vacantes::with('empresa')->get();
 
         if($vacantes -> isEmpty()){
             $data = [

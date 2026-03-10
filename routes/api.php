@@ -8,8 +8,13 @@ use App\Http\Controllers\Api\EmpresaController;
 use App\Http\Controllers\Api\RecomendacionesController;
 use App\Http\Controllers\Api\VacantesController;
 use App\Http\Controllers\Api\PostulacionesController;
+use App\Http\Controllers\Api\CarrerasController;
 
 use App\Http\Controllers\Api\LoginController;
+
+Route::controller(CarrerasController::class)->group(function (){
+    Route::get('carreras' , 'show');
+});
 
 Route::controller(LoginController::class)->group(function () {
     Route::post('login' , 'show');
