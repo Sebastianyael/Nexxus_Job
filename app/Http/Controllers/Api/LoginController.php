@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Usuario;
+use App\Models\Alumno;
 use App\Models\Empresa;
 use Illuminate\Support\Facades\Validator;
 
@@ -17,10 +18,14 @@ class LoginController extends Controller
 
         if ($usuario) {
             if ($usuario->contraseña == $request->contraseña) {
+                $alumno = Alumno::with('usuario')->where('usuario_id' , $usuario->id)->first(); 
                 return response()->json([
                     "mensaje" => "Bienvenido",
+                    "usuarioId" => $usuario->id,
+                    "alumnoId" => $alumno->id,
                     "tipo"    => $usuario->tipo,
-                    "estatus" => 200
+                    "estatus" => 200,
+                    "alumno" => $alumno
                 ], 200);
             } else {
                 return response()->json([
@@ -38,6 +43,7 @@ class LoginController extends Controller
                 return response()->json([
                     "mensaje" => "Bienvenido",
                     "tipo"    => $empresa->tipo,
+                    "empresaId" => $empresa->id,
                     "estatus" => 200
                 ], 200);
             } else {

@@ -9,12 +9,12 @@ use App\Models\Empresa;
 
 class EmpresaController extends Controller
 {
-    public function index(){
-        $empresas = Empresa::with('ubicacion')->get();
+    public function index($id){
+        $empresas = Empresa::where('id' , $id)->first();
 
-        if($empresas -> isEmpty()){
+        if(!$empresas){
             $data = [
-                "mensaje" => "No hay empresas registradas",
+                "mensaje" => "No hay empresa registrada",
                 "estatus" => 404
             ];
 
@@ -22,7 +22,7 @@ class EmpresaController extends Controller
         }
 
         $data = [
-            "mensaje" => "Lista de empresas registradas",
+            "mensaje" => "Datos de la Empresa",
             "estatus" => 200,
             "empresas" => $empresas
         ];
@@ -30,50 +30,50 @@ class EmpresaController extends Controller
         return response()->json($data , 200);
     }
 
-    public function store(Request $request){
-        $validacion = Validator::make($request->all() , [
-            "nombre" => "required",
-            "giro" => "required",
-            "telefono" => "required",
-            "email" => "required",
-            "contraseña" => "required",
-            "calle" => "required",
-            "ubicacion_id" => "required",
-        ]);
+    public function store(Request $request)
+{
 
-        if($validacion->fails()){
-            $data = [
-                "mensaje" => "La validacion fallo",
-                'error' => $validacion->errors(),
-                "estatus" => 400
-            ];
+    $validacion = Validator::make($request->all(), [
+        "nombre"     => "required",
+        "giro"       => "required",
+        "telefono"   => "required",
+        "email"      => "required",
+        "contraseña" => "required",
+        "calle"      => "required",
+        "municipio"  => "required",
+        "cp"         => "required",
+        "colonia"    => "required",
+    ]);
 
-            return response()->json($data , 400);
-        }
-
-       $empresa = Empresa::create([
-           "nombre" => $request->nombre,
-            "giro" => $request->giro,
-            "telefono" => $request->telefono,
-            "email" => $request->email,
-            "contraseña" => $request->contraseña,
-            "calle" => $request->calle,
-            "ubicacion_id" => $request->ubicacion_id,
-        ]); 
-
-        $info_empresa = Empresa::with('ubicacion')->get();
-
-        $data = [
-            "mensaje" => "Empresa registrada correctamente",
-            "estatus" => 200,
-            "empresa" => $info_empresa
-        ];
-
-        return response()->json($data,200);
+    if ($validacion->fails()) {
+        return response()->json([
+            "mensaje" => "La validación falló",
+            "errors"  => $validacion->errors(),
+            "estatus" => 400
+        ], 400);
     }
 
+    $empresa = Empresa::create([
+        "nombre"     => $request->nombre,
+        "giro"       => $request->giro,
+        "telefono"   => $request->telefono,
+        "email"      => $request->email,
+        "contraseña" => $request->contraseña, 
+        "calle"      => $request->calle,
+        "MUNICIPIO"  => $request->municipio,
+        "cp"         => $request->cp,
+        "colonia"    => $request->colonia,
+    ]);
+
+    return response()->json([
+        "mensaje" => "Empresa registrada correctamente",
+        "estatus" => 201,
+        "empresa" => $empresa
+    ], 201);
+}
+
     public function update(Request $request , $id){
-        $empresa = Empresa::with('ubicacion')->where('id' , $id)->first();
+        $empresa = Empresa::where('id' , $id)->first();
 
         $validacion = Validator::make($request->all() , [
             "nombre" => "required",
@@ -82,7 +82,9 @@ class EmpresaController extends Controller
             "email" => "required",
             "contraseña" => "required",
             "calle" => "required",
-            "ubicacion_id" => "required",
+            "cp" => "required",
+            "colonia" => "required",
+            "municipio" => "required"
         ]);
 
         if($validacion->fails()){
@@ -101,7 +103,9 @@ class EmpresaController extends Controller
         $empresa->email = $request->email;
         $empresa->contraseña = $request->contraseña;
         $empresa->calle = $request->calle;
-        $empresa->ubicacion_id = $request->ubicacion_id;
+        $empresa->cp  = $request->cp;
+        $empresa->colonia = $request->colonia;
+        $empresa->MUNICIPIO = $request->municipio;
 
         $empresa->save();
 

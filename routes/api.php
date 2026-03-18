@@ -21,7 +21,7 @@ Route::controller(LoginController::class)->group(function () {
 });
 
 Route::controller(AlumnoController::class)->group(function () {
-    Route::get('usuarios/alumnos' , 'index' );
+    Route::get('usuarios/alumnos/{id}' , 'index' );
     Route::post('usuarios/alumnos' , 'store');
     Route::put('usuarios/alumnos/{id}' , 'update');
     Route::delete('usuarios/alumnos/{id}' , 'destroy');
@@ -35,8 +35,8 @@ Route::controller(InstructorController::class)->group(function (){
 });
 
 Route::controller(EmpresaController::class)->group(function () {
-    Route::get('empresas' , 'index');
-    Route::post('empresas' , 'store');
+    Route::get('empresas/{id}' , 'index');
+    Route::post('empresas', 'store');
     Route::put('empresas/{id}' , 'update');
     Route::delete('empresas/{id}' , 'destroy');
 });
@@ -50,13 +50,14 @@ Route::controller(RecomendacionesController::class)->group(function(){
 
 Route::controller(VacantesController::class)->group(function(){
     Route::get('vacantes' , 'index');
+    Route::get('misVacantes/{id}' , 'misVacantes');
     Route::post('vacantes' , 'store');
     Route::put('vacantes/{id}' , 'update');
     Route::delete('vacantes/{id}' , 'destroy');   
 });
 
 Route::controller(PostulacionesController::class)->group(function(){
-    Route::get('postulaciones' , 'index');
+    Route::get('mispostulaciones/{id}' , 'index');
     Route::post('postulaciones' , 'store');
     Route::put('postulaciones/{id}' , 'update');
     Route::delete('postulaciones/{id}'  , 'destroy');

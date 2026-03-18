@@ -10,25 +10,20 @@ use Illuminate\Support\Facades\DB;
 
 class PostulacionesController
 {
-    public function index(){
-        $postulaciones = Postulacion::all();
-
-        if($postulaciones->isEmpty()){
-            $data = [
+    public function index($id) {
+        
+        $postulaciones = Postulacion::with('vacante.empresa')
+            ->where('alumno_id', $id)
+            ->get();
+    
+        if ($postulaciones->isEmpty()) {
+            return response()->json([
                 "mensaje" => "No hay postulaciones disponibles",
                 "estatus" => 404
-            ];
-            
-            return response()->json($data , 404);
+            ], 404);
         }
-
-        $data = [
-            "mensaje" => "Lista de postulaciones",
-            "estatus" => 200,
-            "postulaciones" => $postulaciones
-        ];
-        
-        return response()->json($postulaciones , 200); 
+    
+        return response()->json($postulaciones, 200); 
     }
 
     public function store(Request $request){

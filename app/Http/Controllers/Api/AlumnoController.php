@@ -11,10 +11,9 @@
 
 class AlumnoController extends Controller
 {
-    public function index(){
-        $alumnos = Alumno::with('usuario')->get();
-
-        if($alumnos -> isEmpty()){
+    public function index($id){
+        $alumno = Alumno::with(['usuario', 'carrera'])->find($id);
+        if(!$alumno){
             $data = [
                 'mensaje' => 'No hay estudiantes registrados',
                 'status' => 404,
@@ -22,11 +21,14 @@ class AlumnoController extends Controller
 
             return response()->json($data , 404);
         }
+        $alumno->load('carrera');
 
         $data = [
-            'mensaje' => 'Lista de alumnos',
-            'status' => 404,
-            'alumnos' => $alumnos
+            'mensaje' => 'Informacion del Alumno',
+            'status' => 200,
+            'alumno' => $alumno,
+           
+
         ];
 
         return response()->json($data, 200);
@@ -46,7 +48,6 @@ class AlumnoController extends Controller
             "genero" => "required",
             "tipo" => "required",
             "matricula" => "required",
-            "curriculum" => "required",
             "carrera_id" => "required",
         ]);
 
@@ -94,8 +95,9 @@ class AlumnoController extends Controller
     }
 
     public function update(Request $request,$id){
-        $usuario = Usuario::find($id);
-        if(!$usuario){
+        $alumno  = Alumno::with(['usuario', 'carrera'])->where('id' , $id)->first();
+       
+        if(!$alumno){
             $data = [
                 "mensaje" => "Usuario no encontrado",
                 "estatus" => 404
@@ -127,28 +129,29 @@ class AlumnoController extends Controller
             ];
             return response()->json($data,400);
         }else{
-            $usuario->nombre = $request->nombre;
-            $usuario->apellido_p = $request->apellido_p;
-            $usuario->apellido_m = $request->apellido_m;
-            $usuario->email = $request->email;
-            $usuario->telefono = $request->telefono;
-            $usuario->contraseña = $request->contraseña;
-            $usuario->fecha_nacimiento = $request->fecha_nacimiento;
-            $usuario->genero = $request->genero;
-            $usuario->save();
-
-            $alumno = Alumno::where('usuario_id' , $usuario->id)->first();
+     
 
             $alumno->matricula = $request->matricula;
             $alumno->curriculum = $request->curriculum;
             $alumno->carrera_id = $request->carrera_id;
-
-            $alumno->info = $usuario;
-
+            $alumno->usuario->nombre = $request->nombre;
+            $alumno->usuario->apellido_p = $request->apellido_p;
+            $alumno->usuario->apellido_m = $request->apellido_m;
+            $alumno->usuario->email = $request->email;
+            $alumno->usuario->telefono = $request->telefono;
+            $alumno->usuario->contraseña = $request->contraseña;
+            $alumno->usuario->fecha_nacimiento = $request->fecha_nacimiento;
+            $alumno->usuario->genero = $request->genero;
+            $alumno->push();
+            
+          
+            $alumno->load('carrera');
             $data = [
                 "mensaje" => "Alumno actualizado correctamente",
                 "estatus" => 200,
-                "alumno" => $alumno
+                "alumno" => $alumno,
+               
+                
             ];
             return response()->json($data,200);
         }

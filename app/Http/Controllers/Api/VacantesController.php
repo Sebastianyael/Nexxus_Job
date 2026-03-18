@@ -10,6 +10,29 @@ use Illuminate\Support\Facades\DB;
 
 class VacantesController extends Controller
 {
+
+    public function misVacantes($id){
+        $vacantes = Vacantes::where('empresa_id' , $id)->get();
+
+        if($vacantes -> isEmpty()){
+            $data = [
+                "mensaje" => "No hay vacantes existentes",
+                "estatus" => 404
+            ];
+
+            return response()->json($data , 404);
+        }
+
+        $data = [
+            "mensaje" => "Lista de vacantes",
+            "estatus" => 200,
+            "vacantes" => $vacantes
+        ];
+
+        return response()->json($data , 200);
+    }
+
+
     public function index(){
         $vacantes = Vacantes::with('empresa')->get();
 
@@ -34,7 +57,7 @@ class VacantesController extends Controller
     public function store(Request $request){
         $validacion = Validator::make($request->all() , [
             "requisitos" => "required",
-            "fecha_de_publicacion" => "required",
+  
             "fecha_de_expiracion" => "required",
             "descripcion" => "required",
             "titulo" => "required",
@@ -53,7 +76,6 @@ class VacantesController extends Controller
 
         $vacante = Vacantes::create([
             "requisitos" => $request->requisitos,
-            "fecha_de_publicacion" => $request->fecha_de_publicacion,
             "fecha_de_expiracion" => $request->fecha_de_expiracion,
             "descripcion" => $request->descripcion,
             "titulo" => $request->titulo,
@@ -61,7 +83,7 @@ class VacantesController extends Controller
         ]);
 
         $data = [
-            "mesaje" => "Vacante registrada con exito",
+            "mensaje" => "Vacante registrada con exito",
             "estatus" => 200,
             "vacante" => $vacante
         ];
@@ -84,7 +106,7 @@ class VacantesController extends Controller
 
         $validacion = Validator::make($request->all() , [
             "requisitos" => "required",
-            "fecha_de_publicacion" => "required",
+
             "fecha_de_expiracion" => "required",
             "descripcion" => "required",
             "titulo" => "required",
@@ -102,7 +124,7 @@ class VacantesController extends Controller
         }
 
         $vacante->requisitos = $request->requisitos;
-        $vacante->fecha_de_publicacion = $request->fecha_de_publicacion;
+    
         $vacante->fecha_de_expiracion = $request->fecha_de_expiracion;
         $vacante->descripcion = $request->descripcion;
         $vacante->titulo = $request->titulo;

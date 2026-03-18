@@ -25,4 +25,8 @@ class Postulacion extends Model
     function vacante(){
         return $this->belongsTo(Vacantes::class , 'vacante_id');
     }
+
+    function empres(){
+        return $this->belongsTo(Empresa::class , 'empresa_id');
+    }
 }

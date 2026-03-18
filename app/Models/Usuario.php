@@ -23,5 +23,5 @@ class Usuario extends Model
         "tipo"
     ]; 
 
-    protected $hidden = ['contraseña']; 
+    
 }

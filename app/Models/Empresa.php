@@ -12,16 +12,16 @@ class Empresa extends Model
     use SoftDeletes;
     protected $table = 'empresas';
     protected $fillable = [
-        "nombre",
-        "giro",
-        "telefono",
-        "email",
-        "contraseña",
-        "calle",
-        "ubicacion_id",
-    ]; 
+        'nombre', 
+        'giro', 
+        'telefono', 
+        'email', 
+        'contraseña', 
+        'calle', 
+        'MUNICIPIO', 
+        'cp', 
+        'colonia'
+    ];
 
-    function ubicacion(){
-        return $this->belongsTo(Ubicacion::class , 'ubicacion_id');
-    }
+  
 }
