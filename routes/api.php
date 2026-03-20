@@ -50,6 +50,7 @@ Route::controller(RecomendacionesController::class)->group(function(){
 
 Route::controller(VacantesController::class)->group(function(){
     Route::get('vacantes' , 'index');
+    Route::get('vacantes/filtrar' , 'filtrar');
     Route::get('misVacantes/{id}' , 'misVacantes');
     Route::post('vacantes' , 'store');
     Route::put('vacantes/{id}' , 'update');

@@ -37,7 +37,7 @@ class AlumnoController extends Controller
 
     public function store(Request $request){
 
-        $validacion = Validator::make($request -> all() , [
+        $validacion = Validator::make($request->all(), [
             "nombre" => "required",
             "apellido_p" => "required",
             "apellido_m" => "required",
@@ -48,52 +48,58 @@ class AlumnoController extends Controller
             "genero" => "required",
             "tipo" => "required",
             "matricula" => "required",
+            'curriculum' => 'nullable|mimes:pdf|max:2048', 
             "carrera_id" => "required",
         ]);
-
+    
         if($validacion->fails()){
             $data = [
                 'mensaje' => 'La validacion fallo',
                 'error' => $validacion->errors(),
                 'status' => 400
             ];
-            return response()->json($data,400);
-
-        }else{
+            return response()->json($data, 400);
+    
+        } else {
+           
+            $path = null;
+    
+         
+            if ($request->hasFile('curriculum')) {
+               
+                $path = $request->file('curriculum')->store('cvs', 'public');
+            }
+    
             $usuario = Usuario::create([
                 "nombre" => $request->nombre,
                 "apellido_p" => $request->apellido_p,
                 "apellido_m" => $request->apellido_m,
                 "email" => $request->email,
                 "telefono" => $request->telefono,
-                "contraseña" => $request->contraseña,
+                "contraseña" => $request->contraseña, 
                 "fecha_nacimiento" => $request->fecha_nacimiento,
                 "genero" => $request->genero,
                 "tipo" => $request->tipo
             ]);
-
-
-
+    
             $alumno = Alumno::create([
                 "matricula" => $request->matricula,
-                "curriculum" => $request->curriculum,
+                "curriculum" => $path, 
                 "carrera_id" => $request->carrera_id,
                 "usuario_id" => $usuario->id
             ]);
             
             $alumno->info = $usuario; 
-
+    
             $data = [
                 "mensaje" => "Alumno registrado correctamente",
                 "estatus" => 200,
                 "alumno" => $alumno,
-                
             ];
             
             return response()->json($data, 200);
         }
     }
-
     public function update(Request $request,$id){
         $alumno  = Alumno::with(['usuario', 'carrera'])->where('id' , $id)->first();
        

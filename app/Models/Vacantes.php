@@ -19,6 +19,10 @@ class Vacantes extends Model
         "descripcion",
         "titulo",
         "empresa_id",
+        "genero",
+        "tiempo",
+        "modalidad",
+        "jornada"
     ];
 
     public function empresa(){
