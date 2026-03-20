@@ -1,10 +1,19 @@
 <?php
 
 return [
-    'paths' => ['api/*', 'sanctum/csrf-cookie', 'login', 'logout', 'register'],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Cross-Origin Resource Sharing (CORS) Configuration
+    |--------------------------------------------------------------------------
+    */
+
+    // Agregamos '*' al final para asegurar que cualquier ruta de la API sea capturada
+    'paths' => ['api/*', 'sanctum/csrf-cookie', '*'],
 
     'allowed_methods' => ['*'],
 
+    // Asegúrate de que estas URLs no tengan una "/" al final
     'allowed_origins' => [
         'http://localhost:5173', 
         'https://nexxusjobfront-production.up.railway.app'
@@ -18,5 +27,7 @@ return [
 
     'max_age' => 0,
 
-    'supports_credentials' => true, // <--- ¡Cámbialo a true!
+    // Al no usar Sanctum, es mejor dejarlo en false para evitar conflictos con Axios
+    'supports_credentials' => false,
+
 ];
