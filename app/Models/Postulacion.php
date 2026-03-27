@@ -18,9 +18,13 @@ class Postulacion extends Model
         "estatus"
     ];
 
-    function usuario(){
+    
+
+    function alumno(){
         return $this->belongsTo(Alumno::class , 'alumno_id');
     }
+
+   
 
     function vacante(){
         return $this->belongsTo(Vacantes::class , 'vacante_id');
