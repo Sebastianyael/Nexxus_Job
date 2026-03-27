@@ -59,6 +59,7 @@ Route::controller(VacantesController::class)->group(function(){
 
 Route::controller(PostulacionesController::class)->group(function(){
     Route::get('mispostulaciones/{id}' , 'index');
+    Route::get('postulados/{id}' , 'vacantePostulados');
     Route::post('postulaciones' , 'store');
     Route::put('postulaciones/{id}' , 'update');
     Route::delete('postulaciones/{id}'  , 'destroy');

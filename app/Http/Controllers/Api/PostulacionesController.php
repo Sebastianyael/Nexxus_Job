@@ -26,6 +26,22 @@ class PostulacionesController
         return response()->json($postulaciones, 200); 
     }
 
+    public function vacantePostulados($id) {
+        
+        $postulaciones = Postulacion::with('alumno.usuario')
+            ->where('vacante_id', $id)
+            ->get();
+    
+        if ($postulaciones->isEmpty()) {
+            return response()->json([
+                "mensaje" => "No hay postulaciones disponibles",
+                "estatus" => 404
+            ], 404);
+        }
+    
+        return response()->json($postulaciones, 200); 
+    }
+
     public function store(Request $request){
         $validacion = Validator::make($request->all(), [ 
             "alumno_id" => "required",
