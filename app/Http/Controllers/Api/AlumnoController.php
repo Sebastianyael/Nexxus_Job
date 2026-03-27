@@ -8,6 +8,7 @@
     use App\Models\Usuario;
     use Illuminate\Support\Facades\Validator;
     use Illuminate\Support\Facades\DB;
+    use Illuminate\Support\Facades\Storage;
 
 class AlumnoController extends Controller
 {
@@ -105,67 +106,74 @@ class AlumnoController extends Controller
             return response()->json($data, 200);
         }
     }
-    public function update(Request $request,$id){
-        $alumno  = Alumno::with(['usuario', 'carrera'])->where('id' , $id)->first();
-       
-        if(!$alumno){
-            $data = [
-                "mensaje" => "Usuario no encontrado",
-                "estatus" => 404
-            ];
-
-            return response()->json($data,404);
+    public function update(Request $request, $id) {
+        $alumno = Alumno::with(['usuario', 'carrera'])->find($id);
+    
+        if (!$alumno) {
+            return response()->json(["mensaje" => "Usuario no encontrado", "estatus" => 404], 404);
         }
-
-        $validacion = Validator::make($request -> all() , [
+    
+        $validacion = Validator::make($request->all(), [
             "nombre" => "required",
             "apellido_p" => "required",
             "apellido_m" => "required",
-            "email" => "required",
+            "email" => "required|email",
             "telefono" => "required",
             "contraseña" => "required",
             "fecha_nacimiento" => "required",
             "genero" => "required",
             "tipo" => "required",
             "matricula" => "required",
-            "curriculum" => "required",
+            "curriculum" => "nullable|mimes:pdf|max:2048",
             "carrera_id" => "required",
         ]);
-        
-        if($validacion->fails()){
-            $data = [
+    
+        if ($validacion->fails()) {
+            return response()->json([
                 'mensaje' => 'La validacion fallo',
                 'error' => $validacion->errors(),
                 'status' => 400
-            ];
-            return response()->json($data,400);
-        }else{
-     
-
-            $alumno->matricula = $request->matricula;
-            $alumno->curriculum = $request->curriculum;
-            $alumno->carrera_id = $request->carrera_id;
-            $alumno->usuario->nombre = $request->nombre;
-            $alumno->usuario->apellido_p = $request->apellido_p;
-            $alumno->usuario->apellido_m = $request->apellido_m;
-            $alumno->usuario->email = $request->email;
-            $alumno->usuario->telefono = $request->telefono;
-            $alumno->usuario->contraseña = $request->contraseña;
-            $alumno->usuario->fecha_nacimiento = $request->fecha_nacimiento;
-            $alumno->usuario->genero = $request->genero;
-            $alumno->push();
-            
-          
-            $alumno->load('carrera');
-            $data = [
-                "mensaje" => "Alumno actualizado correctamente",
-                "estatus" => 200,
-                "alumno" => $alumno,
-               
-                
-            ];
-            return response()->json($data,200);
+            ], 400);
         }
+    
+      
+        $alumno->matricula = $request->matricula;
+        $alumno->carrera_id = $request->carrera_id;
+    
+      
+        if ($request->hasFile('curriculum')) {
+            
+            if ($alumno->curriculum && Storage::disk('public')->exists($alumno->curriculum)) {
+                Storage::disk('public')->delete($alumno->curriculum);
+            }
+            
+            $path = $request->file('curriculum')->store('cvs', 'public');
+            $alumno->curriculum = $path;
+        }
+    
+
+        $alumno->usuario->nombre = $request->nombre;
+        $alumno->usuario->apellido_p = $request->apellido_p;
+        $alumno->usuario->apellido_m = $request->apellido_m;
+        $alumno->usuario->email = $request->email;
+        $alumno->usuario->telefono = $request->telefono;
+        $alumno->usuario->contraseña = $request->contraseña;
+        $alumno->usuario->fecha_nacimiento = $request->fecha_nacimiento;
+        $alumno->usuario->genero = $request->genero;
+        
+        $alumno->push(); 
+    
+    
+        $alumno->load('carrera', 'usuario');
+        if ($alumno->curriculum) {
+            $alumno->curriculum_url = asset('storage/' . $alumno->curriculum);
+        }
+    
+        return response()->json([
+            "mensaje" => "Alumno actualizado correctamente",
+            "estatus" => 200,
+            "alumno" => $alumno,
+        ], 200);
     }
 
     public function destroy(Request $request , $id){
