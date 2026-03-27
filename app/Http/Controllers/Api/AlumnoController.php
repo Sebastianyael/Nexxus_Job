@@ -11,30 +11,33 @@
 
 class AlumnoController extends Controller
 {
-    public function index($id){
+    public function index($id) {
+ 
         $alumno = Alumno::with(['usuario', 'carrera'])->find($id);
-        if(!$alumno){
+    
+        if (!$alumno) {
             $data = [
-                'mensaje' => 'No hay estudiantes registrados',
+                'mensaje' => 'No hay estudiante registrado con ese ID',
                 'status' => 404,
             ];
-
-            return response()->json($data , 404);
+            return response()->json($data, 404);
         }
-        $alumno->load('carrera');
-
+    
+      
+        if ($alumno->curriculum) {
+            $alumno->curriculum_url = asset('storage/' . $alumno->curriculum);
+        } else {
+            $alumno->curriculum_url = null;
+        }
+    
         $data = [
             'mensaje' => 'Informacion del Alumno',
             'status' => 200,
             'alumno' => $alumno,
-           
-
         ];
-
+    
         return response()->json($data, 200);
-        
     }
-
     public function store(Request $request){
 
         $validacion = Validator::make($request->all(), [
