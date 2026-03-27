@@ -91,10 +91,12 @@ class AlumnoController extends Controller
             
             $alumno->info = $usuario; 
     
+            $alumno->curriculum_url = asset('storage/' . $alumno->curriculum);
+
             $data = [
                 "mensaje" => "Alumno registrado correctamente",
                 "estatus" => 200,
-                "alumno" => $alumno,
+                "alumno" => $alumno, 
             ];
             
             return response()->json($data, 200);
