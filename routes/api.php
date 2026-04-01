@@ -9,11 +9,16 @@ use App\Http\Controllers\Api\RecomendacionesController;
 use App\Http\Controllers\Api\VacantesController;
 use App\Http\Controllers\Api\PostulacionesController;
 use App\Http\Controllers\Api\CarrerasController;
+use App\Http\Controllers\Api\PuestosController;
 
 use App\Http\Controllers\Api\LoginController;
 
 Route::controller(CarrerasController::class)->group(function (){
     Route::get('carreras' , 'show');
+});
+
+Route::controller(PuestosController::class)->group(function (){
+    Route::get('/puestos' , 'index');
 });
 
 Route::controller(LoginController::class)->group(function () {
@@ -28,7 +33,7 @@ Route::controller(AlumnoController::class)->group(function () {
 });
 
 Route::controller(InstructorController::class)->group(function (){
-    Route::get('usuarios/instructores' , 'index');
+    Route::get('usuarios/instructores/{id}' , 'index');
     Route::post('usuarios/instructores' , 'store');
     Route::put('usuarios/instructores/{id}' , 'update');
     Route::delete('usuarios/instructores/{id}' , 'destroy');

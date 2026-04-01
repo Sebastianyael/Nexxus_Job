@@ -9,8 +9,8 @@ use Illuminate\Support\Facades\DB;
 
 class InstructorController extends Controller
 {
-    public function index(){
-        $instructores = Instructor::with('usuarios')->first();
+    public function index($id){
+        $instructores = Instructor::with(['usuarios' , 'puesto'])->where('id_usuario' , $id)->first();
 
         if(!$instructores){
             $data = [
