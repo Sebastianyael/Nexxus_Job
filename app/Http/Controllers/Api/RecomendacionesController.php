@@ -10,10 +10,10 @@ use Illuminate\Support\Facades\DB;
 
 class RecomendacionesController extends Controller
 {
-    public function index(){
-        $recomendaciones = Recomendaciones::all();
+    public function index($id){
+        $recomendaciones = Recomendaciones::with('alumnoInfo.usuario')->where('instructor_id' , $id)->get();
 
-        if($recomendaciones -> isEmpty()){
+        if(!$recomendaciones){
             $data = [
                 'mensaje' => 'No hay recomendaciones registradas',
                 'estatus' => 404

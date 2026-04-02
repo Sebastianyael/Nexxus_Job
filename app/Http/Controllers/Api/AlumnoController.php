@@ -198,5 +198,25 @@ class AlumnoController extends Controller
         return response()->json($data,200);
 
     }
+
+    public function search($matricula){
+        $alumno = Alumno::with(['usuario' , 'carrera'])->where('matricula' , $matricula)->first();
+
+        if(!$alumno){
+            $data = [
+                "mensaje" => "Alumno no encontrado" , 
+                "estatus" => 404
+            ];
+
+            return response()->json($data , 404);
+        }
+
+        $data = [
+            "mensaje" => "datos del alumno",
+            "alumno" => $alumno
+        ];
+
+        return response()->json($data , 200);
+    }
   
 }

@@ -30,6 +30,7 @@ Route::controller(AlumnoController::class)->group(function () {
     Route::post('usuarios/alumnos' , 'store');
     Route::put('usuarios/alumnos/{id}' , 'update');
     Route::delete('usuarios/alumnos/{id}' , 'destroy');
+    Route::get('usuarios/search/alumnos/{matricula}' , 'search');
 });
 
 Route::controller(InstructorController::class)->group(function (){
@@ -47,7 +48,7 @@ Route::controller(EmpresaController::class)->group(function () {
 });
 
 Route::controller(RecomendacionesController::class)->group(function(){
-    Route::get('recomendaciones' , 'index');
+    Route::get('recomendaciones/{id}' , 'index');
     Route::post('recomendaciones' , 'store');
     Route::put('recomendaciones/{id}' , 'update');
     Route::delete('recomendaciones/{id}' , 'destroy');

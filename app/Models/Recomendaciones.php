@@ -16,4 +16,8 @@ class Recomendaciones extends Model
         'alumnos_id',
         'comentario'
     ];
+
+    public function alumnoInfo(){
+        return $this->belongsTo(Alumno::class , 'alumnos_id');
+    }
 }
