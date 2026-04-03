@@ -10,11 +10,15 @@ use App\Http\Controllers\Api\VacantesController;
 use App\Http\Controllers\Api\PostulacionesController;
 use App\Http\Controllers\Api\CarrerasController;
 use App\Http\Controllers\Api\PuestosController;
-
+use App\Http\Controllers\Api\MisRecomendacionesController;
 use App\Http\Controllers\Api\LoginController;
 
 Route::controller(CarrerasController::class)->group(function (){
     Route::get('carreras' , 'show');
+});
+
+Route::controller(MisRecomendacionesController::class)->group(function (){
+    Route::get('/misRecomendaciones/{id}' , 'recomendaciones');
 });
 
 Route::controller(PuestosController::class)->group(function (){

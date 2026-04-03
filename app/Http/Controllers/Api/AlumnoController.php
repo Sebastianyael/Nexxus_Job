@@ -6,6 +6,7 @@
     use Illuminate\Http\Request;
     use App\Models\Alumno;
     use App\Models\Usuario;
+    use App\Models\Recomendaciones;
     use Illuminate\Support\Facades\Validator;
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Storage;
@@ -14,7 +15,7 @@ class AlumnoController extends Controller
 {
     public function index($id) {
  
-        $alumno = Alumno::with(['usuario', 'carrera'])->find($id);
+        $alumno = Alumno::with(['usuario', 'carrera' , 'recomendaciones'])->find($id);
     
         if (!$alumno) {
             $data = [

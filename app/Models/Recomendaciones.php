@@ -20,4 +20,10 @@ class Recomendaciones extends Model
     public function alumnoInfo(){
         return $this->belongsTo(Alumno::class , 'alumnos_id');
     }
+
+    public function instructorInfo(){
+        return $this->belongsTo(Instructor::class , 'instructor_id');
+    }
+
+  
 }

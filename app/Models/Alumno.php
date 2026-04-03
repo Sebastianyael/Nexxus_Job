@@ -27,4 +27,8 @@ class Alumno extends Model
     public function carrera(){
         return $this->belongsTo(Carrera::class, 'carrera_id');
     }
+
+    public function recomendaciones(){
+        return $this->belongsTo(Recomendaciones::class , 'alumnos_id');
+    }
 }
