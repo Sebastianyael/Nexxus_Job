@@ -13,7 +13,39 @@ class PostulacionesController
     public function index($id) {
         
         $postulaciones = Postulacion::with('vacante.empresa')
-            ->where('alumno_id', $id)
+            ->where('alumno_id', $id)->where('estatus' , 'pendiente')
+            ->get();
+    
+        if ($postulaciones->isEmpty()) {
+            return response()->json([
+                "mensaje" => "No hay postulaciones disponibles",
+                "estatus" => 404
+            ], 404);
+        }
+    
+        return response()->json($postulaciones, 200); 
+    }
+
+    public function rechazadas($id) {
+        
+        $postulaciones = Postulacion::with('vacante.empresa')
+            ->where('alumno_id', $id)->where('estatus' , 'rechazado')
+            ->get();
+    
+        if ($postulaciones->isEmpty()) {
+            return response()->json([
+                "mensaje" => "No hay postulaciones disponibles",
+                "estatus" => 404
+            ], 404);
+        }
+    
+        return response()->json($postulaciones, 200); 
+    }
+
+    public function aceptadas($id) {
+        
+        $postulaciones = Postulacion::with('vacante.empresa')
+            ->where('alumno_id', $id)->where('estatus' , 'aceptado')
             ->get();
     
         if ($postulaciones->isEmpty()) {
@@ -27,10 +59,12 @@ class PostulacionesController
     }
 
     public function vacantePostulados($id) {
-        
-        $postulaciones = Postulacion::with('alumno.usuario')
-            ->where('vacante_id', $id)
-            ->get();
+        $postulaciones = Postulacion::with([
+            'alumno.usuario', 
+            'alumno.recomendaciones.instructor' 
+        ])
+        ->where('vacante_id', $id)
+        ->get();
     
         if ($postulaciones->isEmpty()) {
             return response()->json([
@@ -57,21 +91,30 @@ class PostulacionesController
             ];
             return response()->json($data,400);
         }
+        
+       $existe = Postulacion::where('alumno_id' , $request->alumno_id)->where('vacante_id' , $request->vacante_id)->exists();
+        if($existe){
+            $data = [
+                "mensaje" => "Ya te has postulado a esta vacante"
+            ];
+            return response()->json($data , 200);
+        }else{
+            $postulacion = Postulacion::create([
+                "alumno_id" => $request->alumno_id,
+                "vacante_id" => $request->vacante_id,
+                "estatus" => $request->estatus
+            ]);
+    
+            $data = [
+                "mensaje" => "Tu postulacion fue enviada correctamente",
+                "estatus" => 200,
+                "postulacion" => $postulacion
+            ];
+    
+            return response()->json($data , 200);
+        }
 
-
-        $postulacion = Postulacion::create([
-            "alumno_id" => $request->alumno_id,
-            "vacante_id" => $request->vacante_id,
-            "estatus" => $request->estatus
-        ]);
-
-        $data = [
-            "mensaje" => "La postulacion fue creada correctamente",
-            "estatus" => 200,
-            "postulacion" => $postulacion
-        ];
-
-        return response()->json($data , 200);
+        
     }
 
     public function update(Request $request , $id){

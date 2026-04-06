@@ -28,7 +28,7 @@ class Alumno extends Model
         return $this->belongsTo(Carrera::class, 'carrera_id');
     }
 
-    public function recomendaciones(){
-        return $this->belongsTo(Recomendaciones::class , 'alumnos_id');
+    public function recomendaciones() {
+        return $this->hasMany(Recomendaciones::class, 'alumnos_id');
     }
 }

@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Recomendaciones;
+use App\Models\Instructor;
 class MisRecomendacionesController extends Controller
 {
     public function recomendaciones($id){
         $recomendaciones = Recomendaciones::with(['instructorInfo.usuarios'])->where('alumnos_id' , $id)->get();
+       
 
         if(!$recomendaciones){
             $data = [

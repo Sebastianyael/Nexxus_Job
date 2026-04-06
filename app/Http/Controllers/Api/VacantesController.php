@@ -162,7 +162,10 @@ class VacantesController extends Controller
         $vacante->fecha_de_expiracion = $request->fecha_de_expiracion;
         $vacante->descripcion = $request->descripcion;
         $vacante->titulo = $request->titulo;
-
+        $vacante->genero = $request->genero;
+        $vacante->modalidad = $request->modalidad;
+        $vacante->jornada = $request->jornada;
+        $vacante->tiempo = $request->tiempo;
         $vacante->save();
 
         $data = [

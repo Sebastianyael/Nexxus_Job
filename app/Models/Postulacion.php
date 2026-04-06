@@ -24,6 +24,9 @@ class Postulacion extends Model
         return $this->belongsTo(Alumno::class , 'alumno_id');
     }
 
+    
+    
+
    
 
     function vacante(){
