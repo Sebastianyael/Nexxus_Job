@@ -15,8 +15,7 @@ return [
 
     // Asegúrate de que estas URLs no tengan una "/" al final
     'allowed_origins' => [
-        'http://localhost:5173', 
-        'https://nexxusjobfront-production.up.railway.app'
+        '*'
     ],
 
     'allowed_origins_patterns' => [],
