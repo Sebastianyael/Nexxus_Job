@@ -12,6 +12,12 @@ use App\Http\Controllers\Api\CarrerasController;
 use App\Http\Controllers\Api\PuestosController;
 use App\Http\Controllers\Api\MisRecomendacionesController;
 use App\Http\Controllers\Api\LoginController;
+use App\Http\Controllers\Api\LaplaceController;
+
+
+Route::controller(LaplaceController::class)->group(function (){
+    Route::get('/fechas' , 'index');
+});
 
 Route::controller(CarrerasController::class)->group(function (){
     Route::get('carreras' , 'show');
